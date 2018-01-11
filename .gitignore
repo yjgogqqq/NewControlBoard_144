@@ -1,0 +1,12 @@
+/MDK-ARM/STM32F40_41xxx
+/MDK-ARM/STM32F410xx
+CubeMX_Generated.si4project
+*.uvguix.*
+*.o
+*.d
+*.axf
+*.htm
+*.map
+*.crf
+*.lst
+*.icf
