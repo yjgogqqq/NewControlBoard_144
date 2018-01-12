@@ -98,13 +98,13 @@ void udp_echoserver_init(void)
   */
 void udp_echoserver_receive_callback(void *arg, struct udp_pcb *upcb, struct pbuf *p, const ip_addr_t *addr, u16_t port)
 {
-
   /* Connect to the remote client */
   udp_connect(upcb, addr, UDP_CLIENT_PORT);
     
   /* Tell the client that we have accepted it */
   udp_send(upcb, p);
-
+	p->payload="123456789";
+	udp_send(upcb, p);
   /* free the UDP connection, so we can accept new clients */
   udp_disconnect(upcb);
 	

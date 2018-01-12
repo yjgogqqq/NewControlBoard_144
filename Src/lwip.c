@@ -59,30 +59,14 @@
 #endif /* MDK ARM Compiler */
 
 /* USER CODE BEGIN 0 */
-/*Static IP ADDRESS: IP_ADDR0.IP_ADDR1.IP_ADDR2.IP_ADDR3 */
-#define IP_ADDR0   (uint8_t) 192
-#define IP_ADDR1   (uint8_t) 168
-#define IP_ADDR2   (uint8_t) 0
-#define IP_ADDR3   (uint8_t) 10
-   
-/*NETMASK*/
-#define NETMASK_ADDR0   (uint8_t) 255
-#define NETMASK_ADDR1   (uint8_t) 255
-#define NETMASK_ADDR2   (uint8_t) 255
-#define NETMASK_ADDR3   (uint8_t) 0
 
-/*Gateway Address*/
-#define GW_ADDR0   (uint8_t) 192
-#define GW_ADDR1   (uint8_t) 168
-#define GW_ADDR2   (uint8_t) 0
-#define GW_ADDR3   (uint8_t) 1
 /* USER CODE END 0 */
 /* Private function prototypes -----------------------------------------------*/
 /* ETH Variables initialization ----------------------------------------------*/
 void _Error_Handler(char * file, int line);
 
 /* DHCP Variables initialization ---------------------------------------------*/
-static uint32_t DHCPfineTimer = 0;
+//static uint32_t DHCPfineTimer = 0;
 uint32_t DHCPcoarseTimer = 0;
 /* USER CODE BEGIN 1 */
 
@@ -144,7 +128,7 @@ void MX_LWIP_Init(void)
   lwip_init();
 	Netif_Config();
   /* Start DHCP negotiation for a network interface (IPv4) */
-  dhcp_start(&gnetif);
+  //dhcp_start(&gnetif);
 
 /* USER CODE BEGIN 3 */
   /* tcp echo server Init */

@@ -107,17 +107,18 @@ int main(void)
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   //HAL_Init();									//when using;Peripherals can not use;
-  /* Use systick as time base source and configure 1ms tick (default clock after Reset is HSI) */
-  HAL_InitTick(TICK_INT_PRIORITY);
+  
   /* USER CODE BEGIN Init */
+	/* Use systick as time base source and configure 1ms tick (default clock after Reset is HSI) */
+  HAL_InitTick(TICK_INT_PRIORITY);
 
   /* USER CODE END Init */
-
+	
   /* Configure the system clock */
   //SystemClock_Config();			//when using;Peripherals can not use;
 
   /* USER CODE BEGIN SysInit */
-
+	
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -167,64 +168,33 @@ for (uwIndex = 0; uwIndex <1024; uwIndex++)
 
 }
 
-/** System Clock Configuration
-*/
-void SystemClock_Config(void)
-{
-
-  RCC_OscInitTypeDef RCC_OscInitStruct;
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
-
-    /**Configure the main internal regulator output voltage 
-    */
-  __HAL_RCC_PWR_CLK_ENABLE();
-
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-
-    /**Initializes the CPU, AHB and APB busses clocks 
-    */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = 16;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 168;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 7;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
-    /**Initializes the CPU, AHB and APB busses clocks 
-    */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
-
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
-    /**Configure the Systick interrupt time 
-    */
-  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
-
-    /**Configure the Systick 
-    */
-  HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
-
-  /* SysTick_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
-}
 
 /* USER CODE BEGIN 4 */
-
+void NVIC_Init()
+{
+	/* Set Interrupt Group Priority */
+	HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_0);
+	/* DMA2_Stream3_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA2_Stream3_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream3_IRQn);
+	/* TIM2 interrupt Init */
+	HAL_NVIC_SetPriority(TIM2_IRQn, 0, 1);
+	HAL_NVIC_EnableIRQ(TIM2_IRQn);
+	
+	HAL_NVIC_SetPriority(ETH_IRQn, 0, 2);
+	HAL_NVIC_EnableIRQ(ETH_IRQn);
+	/* CAN1 interrupt Init */
+	HAL_NVIC_SetPriority(CAN1_RX0_IRQn, 0, 4);
+	HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
+	HAL_NVIC_SetPriority(CAN1_RX1_IRQn, 0, 5);
+	HAL_NVIC_EnableIRQ(CAN1_RX1_IRQn);
+	/* CAN2 interrupt Init */
+	HAL_NVIC_SetPriority(CAN2_RX0_IRQn, 0, 6);
+	HAL_NVIC_EnableIRQ(CAN2_RX0_IRQn);
+	HAL_NVIC_SetPriority(CAN2_RX1_IRQn, 0, 3);
+	HAL_NVIC_EnableIRQ(CAN2_RX1_IRQn);
+	
+}
 /* USER CODE END 4 */
 
 /**

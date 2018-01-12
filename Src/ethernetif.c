@@ -120,6 +120,7 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
     /* Enable Peripheral clock */
 		__HAL_RCC_GPIOA_CLK_ENABLE();
 		__HAL_RCC_GPIOC_CLK_ENABLE();
+		__HAL_RCC_GPIOG_CLK_ENABLE();
     __HAL_RCC_ETH_CLK_ENABLE();
   
     /**ETH GPIO Configuration    
@@ -240,7 +241,7 @@ static void low_level_init(struct netif *netif)
    uint8_t MACAddr[6] ;
   heth.Instance = ETH;
   heth.Init.AutoNegotiation = ETH_AUTONEGOTIATION_ENABLE;
-  heth.Init.PhyAddress = LAN8742A_PHY_ADDRESS;
+  heth.Init.PhyAddress = LAN8720A_PHY_ADDRESS;
   MACAddr[0] = 0x00;
   MACAddr[1] = 0x80;
   MACAddr[2] = 0xE1;

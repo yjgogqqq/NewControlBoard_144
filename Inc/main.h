@@ -61,8 +61,8 @@
 #define DEST_IP_ADDR2   (uint8_t) 0
 #define DEST_IP_ADDR3   (uint8_t) 11
 
-#define UDP_SERVER_PORT    (uint16_t) 7   /* define the UDP local connection port */
-#define UDP_CLIENT_PORT    (uint16_t) 7   /* define the UDP remote connection port */
+#define UDP_SERVER_PORT    (uint16_t) 5000   /* define the UDP local connection port */
+#define UDP_CLIENT_PORT    (uint16_t) 10000   /* define the UDP remote connection port */
  
 /*Static IP ADDRESS: IP_ADDR0.IP_ADDR1.IP_ADDR2.IP_ADDR3 */
 #define IP_ADDR0   (uint8_t) 192
