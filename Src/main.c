@@ -60,7 +60,14 @@
 #include "fsmc.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "lwip/opt.h"
+#include "lwip/init.h"
+#include "lwip/netif.h"
+#include "lwip/timeouts.h"
+#include "netif/etharp.h"
+#include "ethernetif.h"
+#include "app_ethernet.h"
+#include "udp_echoserver.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -74,7 +81,7 @@ __IO uint32_t uwTabAddr;
 __IO uint32_t MSPValue = 0;
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+extern struct netif gnetif;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -124,7 +131,6 @@ int main(void)
 //  MX_FATFS_Init();
   MX_LWIP_Init();
 //  MX_TIM2_Init();
-
   /* USER CODE BEGIN 2 */
 for (uwIndex = 0; uwIndex <1024; uwIndex++)
   {
@@ -142,7 +148,18 @@ for (uwIndex = 0; uwIndex <1024; uwIndex++)
   while (1)
   {
   /* USER CODE END WHILE */
-		printf("11111111111111\r\n");
+		/* Read a received packet from the Ethernet buffers and send it 
+       to the lwIP for handling */
+    ethernetif_input(&gnetif);
+
+    /* Handle timeouts */
+    sys_check_timeouts();
+
+#ifdef USE_DHCP
+    /* handle periodic timers for LwIP */
+    DHCP_Periodic_Handle(&gnetif);
+#endif 
+		
   /* USER CODE BEGIN 3 */
 
   }

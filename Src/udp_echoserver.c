@@ -1,16 +1,13 @@
 /**
   ******************************************************************************
-  * File Name          : main.hpp
-  * Description        : This file contains the common defines of the application
+  * @file    LwIP/LwIP_UDP_Echo_Server/Src/udp_echoserver.c
+  * @author  MCD Application Team
+  * @brief   UDP echo server
   ******************************************************************************
-  * This notice applies to any and all portions of this file
-  * that are not between comment pairs USER CODE BEGIN and
-  * USER CODE END. Other portions of this file, whether 
-  * inserted by the user or by software development tools
-  * are owned by their respective copyright owners.
+  * @attention
   *
-  * Copyright (c) 2018 STMicroelectronics International N.V. 
-  * All rights reserved.
+  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics International N.V. 
+  * All rights reserved.</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without 
   * modification, are permitted, provided that the following conditions are met:
@@ -45,74 +42,75 @@
   *
   ******************************************************************************
   */
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
-  /* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx_hal.h"
-
 /* Includes ------------------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-//#define USE_LCD        /* enable LCD  */  
-//#define USE_DHCP       /* enable DHCP, if disabled static address is used */
+#include "main.h"
+#include "lwip/pbuf.h"
+#include "lwip/udp.h"
+#include "lwip/tcp.h"
+#include <string.h>
+#include <stdio.h>
 
-#define DEST_IP_ADDR0   (uint8_t) 192
-#define DEST_IP_ADDR1   (uint8_t) 168
-#define DEST_IP_ADDR2   (uint8_t) 0
-#define DEST_IP_ADDR3   (uint8_t) 11
-
-#define UDP_SERVER_PORT    (uint16_t) 7   /* define the UDP local connection port */
-#define UDP_CLIENT_PORT    (uint16_t) 7   /* define the UDP remote connection port */
- 
-/*Static IP ADDRESS: IP_ADDR0.IP_ADDR1.IP_ADDR2.IP_ADDR3 */
-#define IP_ADDR0   (uint8_t) 192
-#define IP_ADDR1   (uint8_t) 168
-#define IP_ADDR2   (uint8_t) 0
-#define IP_ADDR3   (uint8_t) 10
-   
-/*NETMASK*/
-#define NETMASK_ADDR0   (uint8_t) 255
-#define NETMASK_ADDR1   (uint8_t) 255
-#define NETMASK_ADDR2   (uint8_t) 255
-#define NETMASK_ADDR3   (uint8_t) 0
-
-/*Gateway Address*/
-#define GW_ADDR0   (uint8_t) 192
-#define GW_ADDR1   (uint8_t) 168
-#define GW_ADDR2   (uint8_t) 0
-#define GW_ADDR3   (uint8_t) 1
-/* USER CODE END Includes */
-
+/* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 
-/* ########################## Assert Selection ############################## */
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/* Private function prototypes -----------------------------------------------*/
+void udp_echoserver_receive_callback(void *arg, struct udp_pcb *upcb, struct pbuf *p, const ip_addr_t *addr, u16_t port);
+
+/* Private functions ---------------------------------------------------------*/
+
 /**
-  * @brief Uncomment the line below to expanse the "assert_param" macro in the 
-  *        HAL drivers code
+  * @brief  Initialize the server application.
+  * @param  None
+  * @retval None
   */
- #define USE_FULL_ASSERT    1U 
-
-/* USER CODE BEGIN Private defines */
-
-/* USER CODE END Private defines */
-
-#ifdef __cplusplus
- extern "C" {
-#endif
-void _Error_Handler(char *, int);
-
-#define Error_Handler() _Error_Handler(__FILE__, __LINE__)
-#ifdef __cplusplus
+void udp_echoserver_init(void)
+{
+   struct udp_pcb *upcb;
+   err_t err;
+   
+   /* Create a new UDP control block  */
+   upcb = udp_new();
+   
+   if (upcb)
+   {
+     /* Bind the upcb to the UDP_PORT port */
+     /* Using IP_ADDR_ANY allow the upcb to be used by any local interface */
+      err = udp_bind(upcb, IP_ADDR_ANY, UDP_SERVER_PORT);
+      
+      if(err == ERR_OK)
+      {
+        /* Set a receive callback for the upcb */
+        udp_recv(upcb, udp_echoserver_receive_callback, NULL);
+      }
+   }
 }
-#endif
 
 /**
-  * @}
-  */ 
+  * @brief This function is called when an UDP datagrm has been received on the port UDP_PORT.
+  * @param arg user supplied argument (udp_pcb.recv_arg)
+  * @param pcb the udp_pcb which received data
+  * @param p the packet buffer that was received
+  * @param addr the remote IP address from which the packet was received
+  * @param port the remote port from which the packet was received
+  * @retval None
+  */
+void udp_echoserver_receive_callback(void *arg, struct udp_pcb *upcb, struct pbuf *p, const ip_addr_t *addr, u16_t port)
+{
 
-/**
-  * @}
-*/ 
+  /* Connect to the remote client */
+  udp_connect(upcb, addr, UDP_CLIENT_PORT);
+    
+  /* Tell the client that we have accepted it */
+  udp_send(upcb, p);
 
-#endif /* __MAIN_H */
+  /* free the UDP connection, so we can accept new clients */
+  udp_disconnect(upcb);
+	
+  /* Free the p buffer */
+  pbuf_free(p);
+   
+}
+
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

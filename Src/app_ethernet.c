@@ -56,7 +56,7 @@
 /* Private variables ---------------------------------------------------------*/
 #ifdef USE_DHCP
 #define MAX_DHCP_TRIES  4
-uint32_t DHCPfineTimer = 0;
+static uint32_t DHCPfineTimer = 0;
 __IO uint8_t DHCP_state = DHCP_OFF;
 #endif
 
@@ -81,7 +81,7 @@ void User_notification(struct netif *netif)
     LCD_UsrLog ("Static IP address: %s\n", iptxt);
 #else    
     /* Turn On LED 1 to indicate ETH and LwIP init success*/
-    BSP_LED_On(LED1);
+    //BSP_LED_On(LED1);
 #endif /* USE_LCD */
 #endif /* USE_DHCP */
  }
@@ -95,7 +95,7 @@ void User_notification(struct netif *netif)
    LCD_UsrLog ("The network cable is not connected \n");
 #else    
     /* Turn On LED 2 to indicate ETH and LwIP init error */
-    BSP_LED_On(LED2);
+    //BSP_LED_On(LED2);
 #endif /* USE_LCD */
   } 
 }
@@ -118,8 +118,8 @@ void ethernetif_notify_conn_changed(struct netif *netif)
 #ifdef USE_LCD
     LCD_UsrLog ("The network cable is now connected \n");
 #else
-    BSP_LED_Off(LED2);
-    BSP_LED_On(LED1);
+    //BSP_LED_Off(LED2);
+    //BSP_LED_On(LED1);
 #endif /* USE_LCD */
     
 #ifdef USE_DHCP
@@ -155,8 +155,8 @@ void ethernetif_notify_conn_changed(struct netif *netif)
 #ifdef USE_LCD
     LCD_UsrLog ("The network cable is not connected \n");
 #else
-    BSP_LED_Off(LED1);
-    BSP_LED_On(LED2);
+    //BSP_LED_Off(LED1);
+    //BSP_LED_On(LED2);
 #endif /* USE_LCD */    
   }
 }
@@ -173,9 +173,9 @@ void DHCP_Process(struct netif *netif)
   ip_addr_t netmask;
   ip_addr_t gw;
   struct dhcp *dhcp;   
-#ifdef USE_LCD 
+//#ifdef USE_LCD
   uint8_t iptxt[20];
-#endif
+//#endif
   
   switch (DHCP_state)
   {
@@ -197,12 +197,13 @@ void DHCP_Process(struct netif *netif)
       if (dhcp_supplied_address(netif)) 
       {
         DHCP_state = DHCP_ADDRESS_ASSIGNED;
-        
+        sprintf((char *)iptxt, "%s", ip4addr_ntoa((const ip4_addr_t *)&netif->ip_addr));
 #ifdef USE_LCD 
         sprintf((char *)iptxt, "%s", ip4addr_ntoa((const ip4_addr_t *)&netif->ip_addr));
         LCD_UsrLog ("IP address assigned by a DHCP server: %s\n", iptxt); 
 #else
-        BSP_LED_On(LED1);   
+        //BSP_LED_On(LED1);
+					//printf("%s\r\n",iptxt);
 #endif
       }
       else
@@ -228,7 +229,7 @@ void DHCP_Process(struct netif *netif)
           LCD_UsrLog ("DHCP Timeout !! \n");
           LCD_UsrLog ("Static IP address: %s\n", iptxt);   
 #else
-          BSP_LED_On(LED1);  
+          //BSP_LED_On(LED1);  
 #endif
         }
       }

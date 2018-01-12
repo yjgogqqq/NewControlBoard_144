@@ -51,6 +51,9 @@
 #include "lwip.h"
 #include "lwip/init.h"
 #include "lwip/netif.h"
+#include "app_ethernet.h"
+#include "udp_echoserver.h"
+#include "main.h"
 #if defined ( __CC_ARM )  /* MDK ARM Compiler */
 #include "lwip/sio.h"
 #endif /* MDK ARM Compiler */
@@ -79,14 +82,14 @@
 void _Error_Handler(char * file, int line);
 
 /* DHCP Variables initialization ---------------------------------------------*/
-uint32_t DHCPfineTimer = 0;
+static uint32_t DHCPfineTimer = 0;
 uint32_t DHCPcoarseTimer = 0;
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
 
 /* Variables Initialization */
-static struct netif gnetif;
+struct netif gnetif;
 
 /* USER CODE BEGIN 2 */
 /**
@@ -144,7 +147,10 @@ void MX_LWIP_Init(void)
   dhcp_start(&gnetif);
 
 /* USER CODE BEGIN 3 */
-
+  /* tcp echo server Init */
+  udp_echoserver_init();
+	 /* Notify user about the network interface config */
+  User_notification(&gnetif);
 /* USER CODE END 3 */
 }
 
