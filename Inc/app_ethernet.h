@@ -1,16 +1,13 @@
 /**
   ******************************************************************************
-  * File Name          : main.hpp
-  * Description        : This file contains the common defines of the application
+  * @file    LwIP/LwIP_UDP_Echo_Client/Inc/app_ethernet.h 
+  * @author  MCD Application Team
+  * @brief   Header for app_ethernet.c module
   ******************************************************************************
-  * This notice applies to any and all portions of this file
-  * that are not between comment pairs USER CODE BEGIN and
-  * USER CODE END. Other portions of this file, whether 
-  * inserted by the user or by software development tools
-  * are owned by their respective copyright owners.
+  * @attention
   *
-  * Copyright (c) 2018 STMicroelectronics International N.V. 
-  * All rights reserved.
+  * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics International N.V. 
+  * All rights reserved.</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without 
   * modification, are permitted, provided that the following conditions are met:
@@ -46,73 +43,40 @@
   ******************************************************************************
   */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
-  /* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx_hal.h"
-
-/* Includes ------------------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-//#define USE_LCD        /* enable LCD  */  
-#define USE_DHCP       /* enable DHCP, if disabled static address is used */
-
-#define DEST_IP_ADDR0   (uint8_t) 192
-#define DEST_IP_ADDR1   (uint8_t) 168
-#define DEST_IP_ADDR2   (uint8_t) 0
-#define DEST_IP_ADDR3   (uint8_t) 11
-
-#define UDP_SERVER_PORT    (uint16_t) 7   /* define the UDP local connection port */
-#define UDP_CLIENT_PORT    (uint16_t) 7   /* define the UDP remote connection port */
- 
-/*Static IP ADDRESS: IP_ADDR0.IP_ADDR1.IP_ADDR2.IP_ADDR3 */
-#define IP_ADDR0   (uint8_t) 192
-#define IP_ADDR1   (uint8_t) 168
-#define IP_ADDR2   (uint8_t) 0
-#define IP_ADDR3   (uint8_t) 10
-   
-/*NETMASK*/
-#define NETMASK_ADDR0   (uint8_t) 255
-#define NETMASK_ADDR1   (uint8_t) 255
-#define NETMASK_ADDR2   (uint8_t) 255
-#define NETMASK_ADDR3   (uint8_t) 0
-
-/*Gateway Address*/
-#define GW_ADDR0   (uint8_t) 192
-#define GW_ADDR1   (uint8_t) 168
-#define GW_ADDR2   (uint8_t) 0
-#define GW_ADDR3   (uint8_t) 1
-/* USER CODE END Includes */
-
-/* Private define ------------------------------------------------------------*/
-
-/* ########################## Assert Selection ############################## */
-/**
-  * @brief Uncomment the line below to expanse the "assert_param" macro in the 
-  *        HAL drivers code
-  */
- #define USE_FULL_ASSERT    1U 
-
-/* USER CODE BEGIN Private defines */
-
-/* USER CODE END Private defines */
+#ifndef __APP_ETHERNET_H
+#define __APP_ETHERNET_H
 
 #ifdef __cplusplus
  extern "C" {
 #endif
-void _Error_Handler(char *, int);
 
-#define Error_Handler() _Error_Handler(__FILE__, __LINE__)
+/* Includes ------------------------------------------------------------------*/
+#include "lwip/netif.h"
+
+/* Exported types ------------------------------------------------------------*/
+/* Exported constants --------------------------------------------------------*/   
+/* DHCP process states */
+#define DHCP_OFF                   (uint8_t) 0
+#define DHCP_START                 (uint8_t) 1
+#define DHCP_WAIT_ADDRESS          (uint8_t) 2
+#define DHCP_ADDRESS_ASSIGNED      (uint8_t) 3
+#define DHCP_TIMEOUT               (uint8_t) 4
+#define DHCP_LINK_DOWN             (uint8_t) 5
+   
+/* Exported macro ------------------------------------------------------------*/
+/* Exported functions ------------------------------------------------------- */
+void User_notification(struct netif *netif);
+#ifdef USE_DHCP
+void DHCP_Process(struct netif *netif);
+void DHCP_Periodic_Handle(struct netif *netif);
+#endif  
+
 #ifdef __cplusplus
 }
 #endif
 
-/**
-  * @}
-  */ 
+#endif /* __APP_ETHERNET_H */
 
-/**
-  * @}
-*/ 
 
-#endif /* __MAIN_H */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+

@@ -65,7 +65,8 @@
 /* USER CODE END 0 */
 
 /* Private define ------------------------------------------------------------*/
-
+#define LAN8720_reset_by_hardware_Pin GPIO_PIN_3
+#define LAN8720_reset_by_hardware_GPIO_Port GPIOD
 /* Network interface name */
 #define IFNAME0 's'
 #define IFNAME1 't'
@@ -117,6 +118,8 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
 
   /* USER CODE END ETH_MspInit 0 */
     /* Enable Peripheral clock */
+		__HAL_RCC_GPIOA_CLK_ENABLE();
+		__HAL_RCC_GPIOC_CLK_ENABLE();
     __HAL_RCC_ETH_CLK_ENABLE();
   
     /**ETH GPIO Configuration    
@@ -150,12 +153,25 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF11_ETH;
     HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+		
+		/*Configure GPIO pin Output Level */
+		HAL_GPIO_WritePin(LAN8720_reset_by_hardware_GPIO_Port, LAN8720_reset_by_hardware_Pin, GPIO_PIN_SET);
 
+		/*Configure GPIO pin : PtPin */
+		GPIO_InitStruct.Pin = LAN8720_reset_by_hardware_Pin;
+		GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+		GPIO_InitStruct.Pull = GPIO_NOPULL;
+		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+		HAL_GPIO_Init(LAN8720_reset_by_hardware_GPIO_Port, &GPIO_InitStruct);
+		//reset lan8720
+		HAL_GPIO_WritePin(LAN8720_reset_by_hardware_GPIO_Port, LAN8720_reset_by_hardware_Pin, GPIO_PIN_RESET);
+		HAL_Delay(50);
+		HAL_GPIO_WritePin(LAN8720_reset_by_hardware_GPIO_Port, LAN8720_reset_by_hardware_Pin, GPIO_PIN_SET);
     /* Peripheral interrupt init */
-    HAL_NVIC_SetPriority(ETH_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(ETH_IRQn);
-    HAL_NVIC_SetPriority(ETH_WKUP_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(ETH_WKUP_IRQn);
+//    HAL_NVIC_SetPriority(ETH_IRQn, 0, 0);
+//    HAL_NVIC_EnableIRQ(ETH_IRQn);
+//    HAL_NVIC_SetPriority(ETH_WKUP_IRQn, 0, 0);
+//    HAL_NVIC_EnableIRQ(ETH_WKUP_IRQn);
   /* USER CODE BEGIN ETH_MspInit 1 */
 
   /* USER CODE END ETH_MspInit 1 */

@@ -99,14 +99,15 @@ int main(void)
   /* MCU Configuration----------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
-
+  //HAL_Init();									//when using;Peripherals can not use;
+  /* Use systick as time base source and configure 1ms tick (default clock after Reset is HSI) */
+  HAL_InitTick(TICK_INT_PRIORITY);
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
 
   /* Configure the system clock */
-  //SystemClock_Config();
+  //SystemClock_Config();			//when using;Peripherals can not use;
 
   /* USER CODE BEGIN SysInit */
 
@@ -121,7 +122,7 @@ int main(void)
 //  MX_CAN1_Init();
 //  MX_CAN2_Init();
 //  MX_FATFS_Init();
-//  MX_LWIP_Init();
+  MX_LWIP_Init();
 //  MX_TIM2_Init();
 
   /* USER CODE BEGIN 2 */
@@ -141,7 +142,7 @@ for (uwIndex = 0; uwIndex <1024; uwIndex++)
   while (1)
   {
   /* USER CODE END WHILE */
-		printf("test");
+		printf("11111111111111\r\n");
   /* USER CODE BEGIN 3 */
 
   }

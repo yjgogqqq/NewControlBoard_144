@@ -56,7 +56,23 @@
 #endif /* MDK ARM Compiler */
 
 /* USER CODE BEGIN 0 */
+/*Static IP ADDRESS: IP_ADDR0.IP_ADDR1.IP_ADDR2.IP_ADDR3 */
+#define IP_ADDR0   (uint8_t) 192
+#define IP_ADDR1   (uint8_t) 168
+#define IP_ADDR2   (uint8_t) 0
+#define IP_ADDR3   (uint8_t) 10
+   
+/*NETMASK*/
+#define NETMASK_ADDR0   (uint8_t) 255
+#define NETMASK_ADDR1   (uint8_t) 255
+#define NETMASK_ADDR2   (uint8_t) 255
+#define NETMASK_ADDR3   (uint8_t) 0
 
+/*Gateway Address*/
+#define GW_ADDR0   (uint8_t) 192
+#define GW_ADDR1   (uint8_t) 168
+#define GW_ADDR2   (uint8_t) 0
+#define GW_ADDR3   (uint8_t) 1
 /* USER CODE END 0 */
 /* Private function prototypes -----------------------------------------------*/
 /* ETH Variables initialization ----------------------------------------------*/
@@ -70,34 +86,36 @@ uint32_t DHCPcoarseTimer = 0;
 /* USER CODE END 1 */
 
 /* Variables Initialization */
-struct netif gnetif;
-ip4_addr_t ipaddr;
-ip4_addr_t netmask;
-ip4_addr_t gw;
+static struct netif gnetif;
 
 /* USER CODE BEGIN 2 */
-
-/* USER CODE END 2 */
-
 /**
-  * LwIP initialization function
+  * @brief  Configurates the network interface
+  * @param  None
+  * @retval None
   */
-void MX_LWIP_Init(void)
+void Netif_Config(void)
 {
-  /* Initilialize the LwIP stack without RTOS */
-  lwip_init();
-
-  /* IP addresses initialization with DHCP (IPv4) */
-  ipaddr.addr = 0;
-  netmask.addr = 0;
-  gw.addr = 0;
-
-  /* add the network interface (IPv4/IPv6) without RTOS */
+  ip_addr_t ipaddr;
+  ip_addr_t netmask;
+  ip_addr_t gw;
+  
+#ifdef USE_DHCP
+  ip_addr_set_zero_ip4(&ipaddr);
+  ip_addr_set_zero_ip4(&netmask);
+  ip_addr_set_zero_ip4(&gw);
+#else
+  IP_ADDR4(&ipaddr,IP_ADDR0,IP_ADDR1,IP_ADDR2,IP_ADDR3);
+  IP_ADDR4(&netmask,NETMASK_ADDR0,NETMASK_ADDR1,NETMASK_ADDR2,NETMASK_ADDR3);
+  IP_ADDR4(&gw,GW_ADDR0,GW_ADDR1,GW_ADDR2,GW_ADDR3);
+#endif /* USE_DHCP */
+  
+  /* Add the network interface */    
   netif_add(&gnetif, &ipaddr, &netmask, &gw, NULL, &ethernetif_init, &ethernet_input);
-
+  
   /* Registers the default network interface */
   netif_set_default(&gnetif);
-
+  
   if (netif_is_link_up(&gnetif))
   {
     /* When the netif is fully configured this function must be called */
@@ -108,7 +126,20 @@ void MX_LWIP_Init(void)
     /* When the netif link is down this function must be called */
     netif_set_down(&gnetif);
   }
+  
+  /* Set the link callback function, this function is called on change of link status*/
+  netif_set_link_callback(&gnetif, ethernetif_update_config);
+}
+/* USER CODE END 2 */
 
+/**
+  * LwIP initialization function
+  */
+void MX_LWIP_Init(void)
+{
+  /* Initilialize the LwIP stack without RTOS */
+  lwip_init();
+	Netif_Config();
   /* Start DHCP negotiation for a network interface (IPv4) */
   dhcp_start(&gnetif);
 
