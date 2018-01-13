@@ -955,19 +955,9 @@
               <FilePath>../Src/lwip.c</FilePath>
             </File>
             <File>
-              <FileName>udp_echoclient.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\udp_echoclient.c</FilePath>
-            </File>
-            <File>
               <FileName>udp_echoserver.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\udp_echoserver.c</FilePath>
-            </File>
-            <File>
-              <FileName>app_ethernet.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\app_ethernet.c</FilePath>
             </File>
           </Files>
         </Group>

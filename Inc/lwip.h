@@ -70,7 +70,42 @@
 #endif /* WITH_RTOS */
 
 /* USER CODE BEGIN 0 */
+//#define USE_LCD        /* enable LCD  */  
+#define USE_DHCP       /* enable DHCP, if disabled static address is used */
 
+//#define DEST_IP_ADDR0   (uint8_t) 192
+//#define DEST_IP_ADDR1   (uint8_t) 168
+//#define DEST_IP_ADDR2   (uint8_t) 0
+//#define DEST_IP_ADDR3   (uint8_t) 11
+
+#define UDP_SERVER_PORT    (uint16_t) 5000   /* define the UDP local connection port */
+#define UDP_CLIENT_PORT    (uint16_t) 10000   /* define the UDP remote connection port */
+ 
+/*Static IP ADDRESS: IP_ADDR0.IP_ADDR1.IP_ADDR2.IP_ADDR3 */
+#define IP_ADDR0   (uint8_t) 169//192
+#define IP_ADDR1   (uint8_t) 254//168
+#define IP_ADDR2   (uint8_t) 136//0
+#define IP_ADDR3   (uint8_t) 10
+   
+/*NETMASK*/
+#define NETMASK_ADDR0   (uint8_t) 255//255
+#define NETMASK_ADDR1   (uint8_t) 0//255
+#define NETMASK_ADDR2   (uint8_t) 0//255
+#define NETMASK_ADDR3   (uint8_t) 0
+
+/*Gateway Address*/
+#define GW_ADDR0   (uint8_t) 0//192
+#define GW_ADDR1   (uint8_t) 0//168
+#define GW_ADDR2   (uint8_t) 0
+#define GW_ADDR3   (uint8_t) 0//1
+
+/* DHCP process states */
+#define DHCP_OFF                   (uint8_t) 0
+#define DHCP_START                 (uint8_t) 1
+#define DHCP_WAIT_ADDRESS          (uint8_t) 2
+#define DHCP_ADDRESS_ASSIGNED      (uint8_t) 3
+#define DHCP_TIMEOUT               (uint8_t) 4
+#define DHCP_LINK_DOWN             (uint8_t) 5
 /* USER CODE END 0 */
 
 /* Global Variables ----------------------------------------------------------*/
@@ -78,7 +113,11 @@ extern ETH_HandleTypeDef heth;
 
 /* LWIP init function */	
 void MX_LWIP_Init(void);
-
+void User_notification(struct netif *netif);
+#ifdef USE_DHCP
+void DHCP_Process(struct netif *netif);
+void DHCP_Periodic_Handle(struct netif *netif);
+#endif  
 #if !WITH_RTOS
 /* USER CODE BEGIN 1 */
 /* Function defined in lwip.c to:

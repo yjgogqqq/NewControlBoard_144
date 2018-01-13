@@ -66,7 +66,6 @@
 #include "lwip/timeouts.h"
 #include "netif/etharp.h"
 #include "ethernetif.h"
-#include "app_ethernet.h"
 #include "udp_echoserver.h"
 /* USER CODE END Includes */
 

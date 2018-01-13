@@ -47,6 +47,7 @@
 #include "lwip/pbuf.h"
 #include "lwip/udp.h"
 #include "lwip/tcp.h"
+#include "lwip.h"
 #include <string.h>
 #include <stdio.h>
 
