@@ -370,7 +370,7 @@ HAL_StatusTypeDef HAL_SD_InitCard(SD_HandleTypeDef *hsd)
   SDIO_Init(hsd->Instance, Init);
 
   /* Disable SDIO Clock */
-  __HAL_SD_DISABLE(hsd); 
+  //__HAL_SD_DISABLE(hsd);//liu
   
   /* Set Power State to ON */
   SDIO_PowerState_ON(hsd->Instance);
@@ -381,15 +381,15 @@ HAL_StatusTypeDef HAL_SD_InitCard(SD_HandleTypeDef *hsd)
   /* Required power up waiting time before starting the SD initialization 
   sequence */
   HAL_Delay(2U);
-  
+  //liu
   /* Identify card operating voltage */
-  errorstate = SD_PowerON(hsd);
-  if(errorstate != HAL_SD_ERROR_NONE)
-  {
-    hsd->State = HAL_SD_STATE_READY;
-    hsd->ErrorCode |= errorstate;
-    return HAL_ERROR;
-  }
+  //errorstate = SD_PowerON(hsd);
+  //if(errorstate != HAL_SD_ERROR_NONE)
+  //{
+  //  hsd->State = HAL_SD_STATE_READY;
+  //  hsd->ErrorCode |= errorstate;
+  //  return HAL_ERROR;
+  //}
 
   /* Card initialization */
   errorstate = SD_InitCard(hsd);
@@ -2446,18 +2446,36 @@ static uint32_t SD_InitCard(SD_HandleTypeDef *hsd)
   HAL_SD_CardCSDTypeDef CSD;
   uint32_t errorstate = HAL_SD_ERROR_NONE;
   uint16_t sd_rca = 1U;
-  
+  //liu
   /* Check the power State */
-  if(SDIO_GetPowerState(hsd->Instance) == 0U) 
-  {
-    /* Power off */
-    return HAL_SD_ERROR_REQUEST_NOT_APPLICABLE;
+  //if(SDIO_GetPowerState(hsd->Instance) == 0U) 
+  //{
+  //  /* Power off */
+  //  return HAL_SD_ERROR_REQUEST_NOT_APPLICABLE;
+  //}
+  //liu
+  //if(hsd->SdCard.CardType != CARD_SECURED) 
+  //{
+  //  /* Send CMD2 ALL_SEND_CID */
+  //  errorstate = SDMMC_CmdSendCID(hsd->Instance);
+  //  if(errorstate != HAL_SD_ERROR_NONE)
+  //  {
+  //    return errorstate;
+  //  }
+  //  else
+  //  {
+  //    /* Get Card identification number data */
+  //    hsd->CID[0U] = SDIO_GetResponse(hsd->Instance, SDIO_RESP1);
+  //    hsd->CID[1U] = SDIO_GetResponse(hsd->Instance, SDIO_RESP2);
+  //    hsd->CID[2U] = SDIO_GetResponse(hsd->Instance, SDIO_RESP3);
+  //    hsd->CID[3U] = SDIO_GetResponse(hsd->Instance, SDIO_RESP4);
+  //  }
   }
-  
+  //liu
   if(hsd->SdCard.CardType != CARD_SECURED) 
   {
-    /* Send CMD2 ALL_SEND_CID */
-    errorstate = SDMMC_CmdSendCID(hsd->Instance);
+    /* Send CMD0 GO_IDLE_STATE */
+    errorstate = SDMMC_CmdGoIdleState(hsd->Instance);//SDMMC_CmdSendCID(hsd->Instance);//liu
     if(errorstate != HAL_SD_ERROR_NONE)
     {
       return errorstate;
@@ -2465,11 +2483,99 @@ static uint32_t SD_InitCard(SD_HandleTypeDef *hsd)
     else
     {
       /* Get Card identification number data */
-      hsd->CID[0U] = SDIO_GetResponse(hsd->Instance, SDIO_RESP1);
-      hsd->CID[1U] = SDIO_GetResponse(hsd->Instance, SDIO_RESP2);
-      hsd->CID[2U] = SDIO_GetResponse(hsd->Instance, SDIO_RESP3);
-      hsd->CID[3U] = SDIO_GetResponse(hsd->Instance, SDIO_RESP4);
+      //hsd->CID[0U] = SDIO_GetResponse(hsd->Instance, SDIO_RESP1);
+      //hsd->CID[1U] = SDIO_GetResponse(hsd->Instance, SDIO_RESP2);
+      //hsd->CID[2U] = SDIO_GetResponse(hsd->Instance, SDIO_RESP3);
+      //hsd->CID[3U] = SDIO_GetResponse(hsd->Instance, SDIO_RESP4);
     }
+  }
+
+    //liu
+  if(hsd->SdCard.CardType != CARD_SECURED) 
+  {
+    /* Send CMD0 GO_IDLE_STATE */
+      /* CMD8: SEND_IF_COND: Command available only on V2.0 cards */
+	  errorstate = SDMMC_CmdOperCond(hsd->Instance);
+	  if(errorstate != HAL_SD_ERROR_NONE)
+	  {
+	    hsd->SdCard.CardVersion = CARD_V1_X;
+	      
+	    /* Send ACMD41 SD_APP_OP_COND with Argument 0x80100000 */
+	    while(validvoltage == 0U)
+	    {
+	      if(count++ == SDMMC_MAX_VOLT_TRIAL)
+	      {
+	        return HAL_SD_ERROR_INVALID_VOLTRANGE;
+	      }
+	      
+	      /* SEND CMD55 APP_CMD with RCA as 0 */
+	      errorstate = SDMMC_CmdAppCommand(hsd->Instance, 0U);
+	      if(errorstate != HAL_SD_ERROR_NONE)
+	      {
+	        return HAL_SD_ERROR_UNSUPPORTED_FEATURE;
+	      }
+	      
+	      /* Send CMD41 */
+	      errorstate = SDMMC_CmdAppOperCommand(hsd->Instance, SDMMC_STD_CAPACITY);
+	      if(errorstate != HAL_SD_ERROR_NONE)
+	      {
+	        return HAL_SD_ERROR_UNSUPPORTED_FEATURE;
+	      }
+	      
+	      /* Get command response */
+	      response = SDIO_GetResponse(hsd->Instance, SDIO_RESP1);
+	      
+	      /* Get operating voltage*/
+	      validvoltage = (((response >> 31U) == 1U) ? 1U : 0U);
+	    }
+	    /* Card type is SDSC */
+	    hsd->SdCard.CardType = CARD_SDSC;
+	  }
+	  else
+	  {
+	    hsd->SdCard.CardVersion = CARD_V2_X;
+	    hsd->SdCard.CardType=0x40000000;   
+	    /* Send ACMD41 SD_APP_OP_COND with Argument 0x80100000 */
+	    while(validvoltage == 0U)
+	    {
+	      if(count++ == SDMMC_MAX_VOLT_TRIAL)
+	      {
+	        return HAL_SD_ERROR_INVALID_VOLTRANGE;
+	      }
+	      
+	      /* SEND CMD55 APP_CMD with RCA as 0 */
+	      errorstate = SDMMC_CmdAppCommand(hsd->Instance, 0U);
+	      if(errorstate != HAL_SD_ERROR_NONE)
+	      {
+	        return errorstate;
+	      }
+	      
+	      /* Send CMD41 */
+	      errorstate = SDMMC_CmdAppOperCommand(hsd->Instance, SDMMC_HIGH_CAPACITY);
+	      if(errorstate != HAL_SD_ERROR_NONE)
+	      {
+	        return errorstate;
+	      }
+	      
+	      /* Get command response */
+	      response = SDIO_GetResponse(hsd->Instance, SDIO_RESP1);
+	      
+	      /* Get operating voltage*/
+	      validvoltage = (((response >> 31U) == 1U) ? 1U : 0U);
+	    }
+	    
+	    if((response & SDMMC_HIGH_CAPACITY) == SDMMC_HIGH_CAPACITY) /* (response &= SD_HIGH_CAPACITY) */
+	    {
+	      hsd->SdCard.CardType = 0x02;//CARD_SDHC_SDXC;//liu
+	    }
+	    else
+	    {
+	      hsd->SdCard.CardType = CARD_SDSC;
+	    }
+	  }
+	  
+	  return HAL_SD_ERROR_NONE;
+	}
   }
   
   if(hsd->SdCard.CardType != CARD_SECURED) 

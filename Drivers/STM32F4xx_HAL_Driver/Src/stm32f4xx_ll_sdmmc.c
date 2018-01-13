@@ -977,8 +977,8 @@ uint32_t SDMMC_CmdSendCID(SDIO_TypeDef *SDIOx)
   
   /* Send CMD2 ALL_SEND_CID */
   sdmmc_cmdinit.Argument         = 0U;
-  sdmmc_cmdinit.CmdIndex         = SDMMC_CMD_ALL_SEND_CID;
-  sdmmc_cmdinit.Response         = SDIO_RESPONSE_LONG;
+  sdmmc_cmdinit.CmdIndex         = SDMMC_CMD_ALL_SEND_CID;//liu
+  sdmmc_cmdinit.Response         = SDIO_RESPONSE_LONG;//liu
   sdmmc_cmdinit.WaitForInterrupt = SDIO_WAIT_NO;
   sdmmc_cmdinit.CPSM             = SDIO_CPSM_ENABLE;
   SDIO_SendCommand(SDIOx, &sdmmc_cmdinit);
