@@ -124,11 +124,11 @@ int main(void)
   MX_GPIO_Init();
   MX_USART1_UART_Init();
 //  MX_SPI1_Init();
-//  MX_SDIO_SD_Init();
+  MX_SDIO_SD_Init();
 //  //MX_FSMC_Init();
 //  MX_CAN1_Init();
 //  MX_CAN2_Init();
-//  MX_FATFS_Init();
+  MX_FATFS_Init();
   MX_LWIP_Init();
 //  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
