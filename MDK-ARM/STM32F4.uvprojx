@@ -297,8 +297,8 @@
               </OCR_RVCT8>
               <OCR_RVCT9>
                 <Type>0</Type>
-                <StartAddress>0x68000000</StartAddress>
-                <Size>0x2ffff</Size>
+                <StartAddress>0x20000000</StartAddress>
+                <Size>0x20000</Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
@@ -310,7 +310,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>4</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -759,6 +759,11 @@
               <FileType>1</FileType>
               <FilePath>../Middlewares/Third_Party/FatFs/src/diskio.c</FilePath>
             </File>
+            <File>
+              <FileName>unicode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\Third_Party\FatFs\src\option\unicode.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -895,11 +900,6 @@
               <FilePath>../Src/main.c</FilePath>
             </File>
             <File>
-              <FileName>bsp_driver_sd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Src/bsp_driver_sd.c</FilePath>
-            </File>
-            <File>
               <FileName>gpio.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Src/gpio.c</FilePath>
@@ -958,6 +958,11 @@
               <FileName>udp_echoserver.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\udp_echoserver.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm324xg_eval_sd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\stm324xg_eval_sd.c</FilePath>
             </File>
           </Files>
         </Group>

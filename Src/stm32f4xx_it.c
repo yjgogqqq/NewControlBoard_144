@@ -42,7 +42,7 @@
 /* External variables --------------------------------------------------------*/
 extern ETH_HandleTypeDef heth;
 extern TIM_HandleTypeDef htim2;
-
+extern SD_HandleTypeDef uSdHandle;
 /******************************************************************************/
 /*            Cortex-M4 Processor Interruption and Exception Handlers         */ 
 /******************************************************************************/
@@ -184,7 +184,35 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f4xx.s).                    */
 /******************************************************************************/
+/**
+  * @brief  This function handles DMA2 Stream 3 interrupt request.
+  * @param  None
+  * @retval None
+  */
+void BSP_SD_DMA_Rx_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(uSdHandle.hdmarx);
+}
 
+/**
+  * @brief  This function handles DMA2 Stream 6 interrupt request.
+  * @param  None
+  * @retval None
+  */
+void BSP_SD_DMA_Tx_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(uSdHandle.hdmatx);
+}
+
+/**
+  * @brief  This function handles SDIO interrupt request.
+  * @param  None
+  * @retval None
+  */
+void SDIO_IRQHandler(void)
+{
+  HAL_SD_IRQHandler(&uSdHandle);
+}
 /**
 * @brief This function handles TIM2 global interrupt.
 */

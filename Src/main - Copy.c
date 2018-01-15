@@ -67,8 +67,6 @@
 #include "netif/etharp.h"
 #include "ethernetif.h"
 #include "udp_echoserver.h"
-#include "ff_gen_drv.h"
-#include "sd_diskio.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -83,11 +81,6 @@ __IO uint32_t MSPValue = 0;
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 extern struct netif gnetif;
-extern uint8_t retSD;
-FATFS SDFatFs;  /* File system object for SD card logical drive */
-FIL MyFile;     /* File object */
-extern char SDPath[4]; /* SD card logical drive path */
-static uint8_t buffer[_MAX_SS]; /* a work buffer for the f_mkfs() */
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,10 +99,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	FRESULT res;                                          /* FatFs function common result code */
-  uint32_t byteswritten, bytesread;                     /* File write/read counts */
-  uint8_t wtext[] = "This is STM32 working with FatFs"; /* File write buffer */
-  uint8_t rtext[100];                                   /* File read buffer */
+
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -119,11 +109,8 @@ int main(void)
   
   /* USER CODE BEGIN Init */
 	/* Use systick as time base source and configure 1ms tick (default clock after Reset is HSI) */
-  //HAL_InitTick(TICK_INT_PRIORITY);
-	HAL_Init();
-  
-  /* Configure the system clock to 168 MHz */
-  SystemClock_Config();
+  HAL_InitTick(TICK_INT_PRIORITY);
+
   /* USER CODE END Init */
 	
   /* Configure the system clock */
@@ -137,98 +124,14 @@ int main(void)
   MX_GPIO_Init();
   MX_USART1_UART_Init();
 //  MX_SPI1_Init();
-  
+  MX_SDIO_SD_Init();
 //  //MX_FSMC_Init();
-  //MX_CAN1_Init();
-  //MX_CAN2_Init();
-	//MX_SDIO_SD_Init();
-  //MX_FATFS_Init();
+//  MX_CAN1_Init();
+//  MX_CAN2_Init();
+  MX_FATFS_Init();
   MX_LWIP_Init();
-	MX_TIM2_Init();
+//  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-//	/*##-1- Link the micro SD disk I/O driver ##################################*/
-//  if(retSD == 0)
-//  {
-//    /*##-2- Register the file system object to the FatFs module ##############*/
-//    if(f_mount(&SDFatFs, (TCHAR const*)SDPath, 0) != FR_OK)
-//    {
-//      /* FatFs Initialization Error */
-//      Error_Handler();
-//    }
-//    else
-//    {
-//      /*##-3- Create a FAT file system (format) on the logical drive #########*/
-//      /* WARNING: Formatting the uSD card will delete all content on the device */
-//      if(f_mkfs((TCHAR const*)SDPath, FM_ANY, 0, buffer, sizeof(buffer)) != FR_OK)
-//      {
-//        /* FatFs Format Error */
-//        Error_Handler();
-//      }
-//      else
-//      {       
-//        /*##-4- Create and Open a new text file object with write access #####*/
-//        if(f_open(&MyFile, "STM32F407_01.TXT", FA_CREATE_ALWAYS | FA_WRITE) != FR_OK)
-//        {
-//          /* 'STM32.TXT' file Open for write Error */
-//          Error_Handler();
-//        }
-//        else
-//        {
-//          /*##-5- Write data to the text file ################################*/
-//          res = f_write(&MyFile, wtext, sizeof(wtext), (void *)&byteswritten);
-//          
-//          if((byteswritten == 0) || (res != FR_OK))
-//          {
-//            /* 'STM32.TXT' file Write or EOF Error */
-//            Error_Handler();
-//          }
-//          else
-//          {
-//            /*##-6- Close the open text file #################################*/
-//            f_close(&MyFile);
-//            
-//            /*##-7- Open the text file object with read access ###############*/
-//            if(f_open(&MyFile, "STM32.TXT", FA_READ) != FR_OK)
-//            {
-//              /* 'STM32.TXT' file Open for read Error */
-//              Error_Handler();
-//            }
-//            else
-//            {
-//              /*##-8- Read data from the text file ###########################*/
-//              res = f_read(&MyFile, rtext, sizeof(rtext), (UINT*)&bytesread);
-//              
-//              if((bytesread == 0) || (res != FR_OK))
-//              {
-//                /* 'STM32.TXT' file Read or EOF Error */
-//                Error_Handler();
-//              }
-//              else
-//              {
-//                /*##-9- Close the open text file #############################*/
-//                f_close(&MyFile);
-//                
-//                /*##-10- Compare read data with the expected data ############*/
-//                if((bytesread != byteswritten))
-//                {                
-//                  /* Read data is different from the expected data */
-//                  Error_Handler();
-//                }
-//                else
-//                {
-//                  /* Success of the demo: no error occurrence */
-//                  //BSP_LED_On(LED1);
-//                }
-//              }
-//            }
-//          }
-//        }
-//      }
-//    }
-//  }
-//  
-//  /*##-11- Unlink the RAM disk I/O driver ####################################*/
-//  FATFS_UnLinkDriver(SDPath);
 for (uwIndex = 0; uwIndex <1024; uwIndex++)
   {
     aTable[uwIndex] =uwIndex;
@@ -290,46 +193,6 @@ void NVIC_Init()
 	HAL_NVIC_SetPriority(CAN2_RX1_IRQn, 0, 3);
 	HAL_NVIC_EnableIRQ(CAN2_RX1_IRQn);
 	
-}
-static void SystemClock_Config(void)
-{
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
-  RCC_OscInitTypeDef RCC_OscInitStruct;
-
-  /* Enable Power Control clock */
-  __HAL_RCC_PWR_CLK_ENABLE();
-
-  /* The voltage scaling allows optimizing the power consumption when the device is 
-     clocked below the maximum system frequency, to update the voltage scaling value 
-     regarding system frequency refer to product datasheet.  */
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-
-  /* Enable HSE Oscillator and activate PLL with HSE as source */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 25;
-  RCC_OscInitStruct.PLL.PLLN = 336;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 7;
-  HAL_RCC_OscConfig(&RCC_OscInitStruct);
-  
-  /* Select PLL as system clock source and configure the HCLK, PCLK1 and PCLK2 
-     clocks dividers */
-  RCC_ClkInitStruct.ClockType = (RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2);
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;  
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;  
-  HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5);
-
-  /* STM32F405x/407x/415x/417x Revision Z devices: prefetch is supported  */
-  if (HAL_GetREVID() == 0x1001)
-  {
-    /* Enable the Flash prefetch */
-    __HAL_FLASH_PREFETCH_BUFFER_ENABLE();
-  }
 }
 /* USER CODE END 4 */
 
