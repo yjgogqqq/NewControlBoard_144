@@ -90,7 +90,7 @@
 /************************* Miscellaneous Configuration ************************/
 /*!< Uncomment the following line if you need to use external SRAM mounted
      on STM324xG_EVAL boards as data memory  */
-/* #define DATA_IN_ExtSRAM */
+#define DATA_IN_ExtSRAM 
 
 /*!< Uncomment the following line if you need to relocate your vector Table in
      Internal SRAM. */
@@ -289,12 +289,12 @@ void SystemInit_ExtMemCtl(void)
   RCC->AHB1ENR   |= 0x00000078;
   
   /* Connect PDx pins to FMC Alternate function */
-  GPIOD->AFR[0]  = 0x00CC00CC;
+  GPIOD->AFR[0]  = 0x00CCC0CC;//0x00CC00CC;
   GPIOD->AFR[1]  = 0xCCCCCCCC;
   /* Configure PDx pins in Alternate function mode */  
-  GPIOD->MODER   = 0xAAAA0A0A;
+  GPIOD->MODER   = 0xAAAA0A8A;//0xAAAA0A0A;
   /* Configure PDx pins speed to 100 MHz */  
-  GPIOD->OSPEEDR = 0xFFFF0F0F;
+  GPIOD->OSPEEDR = 0xFFFF0FCF;//0xFFFF0F0F;
   /* Configure PDx pins Output type to push-pull */  
   GPIOD->OTYPER  = 0x00000000;
   /* No pull-up, pull-down for PDx pins */ 
@@ -326,11 +326,11 @@ void SystemInit_ExtMemCtl(void)
 
   /* Connect PGx pins to FMC Alternate function */
   GPIOG->AFR[0]  = 0x00CCCCCC;
-  GPIOG->AFR[1]  = 0x000000C0;
+  GPIOG->AFR[1]  = 0x00000C00;
   /* Configure PGx pins in Alternate function mode */ 
-  GPIOG->MODER   = 0x00080AAA;
+  GPIOG->MODER   = 0x00200AAA;
   /* Configure PGx pins speed to 100 MHz */ 
-  GPIOG->OSPEEDR = 0x000C0FFF;
+  GPIOG->OSPEEDR = 0x00300FFF;
   /* Configure PGx pins Output type to push-pull */  
   GPIOG->OTYPER  = 0x00000000;
   /* No pull-up, pull-down for PGx pins */ 
@@ -340,10 +340,10 @@ void SystemInit_ExtMemCtl(void)
   /* Enable the FMC/FSMC interface clock */
   RCC->AHB3ENR         |= 0x00000001;
   
-  /* Configure and enable Bank1_SRAM2 */
-  FSMC_Bank1->BTCR[2]  = 0x00001091;
-  FSMC_Bank1->BTCR[3]  = 0x00110212;
-  FSMC_Bank1E->BWTR[2] = 0x0FFFFFFF;
+  /* Configure and enable Bank1_SRAM3 */
+  FSMC_Bank1->BTCR[4]  = 0x00001011;//0x00001011;//0x00001091;
+  FSMC_Bank1->BTCR[5]  = 0x00000800;//			//0x00110212;
+  FSMC_Bank1E->BWTR[3] = 0x0FFFFFFF;
 }
 #endif /* DATA_IN_ExtSRAM */
 /**
