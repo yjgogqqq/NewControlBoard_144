@@ -48,28 +48,26 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stm32f4xx_hal.h"
-#include "can.h"
-#include "fatfs.h"
-#include "lwip.h"
-#include "sdio.h"
-#include "spi.h"
-#include "tim.h"
-#include "usart.h"
-#include "gpio.h"
-#include "fsmc.h"
+//#include "stm32f4xx_hal.h"
+//#include "can.h"
+//#include "fatfs.h"
+//#include "lwip.h"
+//#include "sdio.h"
+//#include "spi.h"
+//#include "tim.h"
+//#include "usart.h"
+//#include "gpio.h"
+//#include "fsmc.h"
 
-/* USER CODE BEGIN Includes */
-#include "lwip/opt.h"
-#include "lwip/init.h"
-#include "lwip/netif.h"
-#include "lwip/timeouts.h"
-#include "netif/etharp.h"
-#include "ethernetif.h"
-#include "udp_echoserver.h"
-#include "ff_gen_drv.h"
-#include "sd_diskio.h"
-/* USER CODE END Includes */
+///* USER CODE BEGIN Includes */
+//#include "lwip/opt.h"
+//#include "lwip/init.h"
+//#include "lwip/netif.h"
+//#include "lwip/timeouts.h"
+//#include "netif/etharp.h"
+//#include "ethernetif.h"
+//#include "udp_echoserver.h"
+///* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
 /* Data array */
@@ -115,27 +113,26 @@ int main(void)
   /* MCU Configuration----------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  //HAL_Init();									//when using;Peripherals can not use;
-  
-  /* USER CODE BEGIN Init */
-	/* Use systick as time base source and configure 1ms tick (default clock after Reset is HSI) */
-  //HAL_InitTick(TICK_INT_PRIORITY);
-	HAL_Init();
-  
+  HAL_Init();									//when using;Peripherals can not use;
   /* Configure the system clock to 168 MHz */
   SystemClock_Config();
+  /* USER CODE BEGIN Init */
+  
   /* USER CODE END Init */
 	
   /* Configure the system clock */
   //SystemClock_Config();			//when using;Peripherals can not use;
 
   /* USER CODE BEGIN SysInit */
-	
+//	HAL_InitTick(TICK_INT_PRIORITY);
+//	//SetSysClock();
+//	SystemClock_Config();
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_USART1_UART_Init();
+  //MX_TIM2_Init();
+//	MX_GPIO_Init();
+//  MX_USART1_UART_Init();
 //  MX_SPI1_Init();
   
 //  //MX_FSMC_Init();
@@ -143,92 +140,92 @@ int main(void)
   //MX_CAN2_Init();
 	//MX_SDIO_SD_Init();
   //MX_FATFS_Init();
-  MX_LWIP_Init();
-	MX_TIM2_Init();
+  //MX_LWIP_Init();
+	
   /* USER CODE BEGIN 2 */
-//	/*##-1- Link the micro SD disk I/O driver ##################################*/
-//  if(retSD == 0)
-//  {
-//    /*##-2- Register the file system object to the FatFs module ##############*/
-//    if(f_mount(&SDFatFs, (TCHAR const*)SDPath, 0) != FR_OK)
-//    {
-//      /* FatFs Initialization Error */
-//      Error_Handler();
-//    }
-//    else
-//    {
-//      /*##-3- Create a FAT file system (format) on the logical drive #########*/
-//      /* WARNING: Formatting the uSD card will delete all content on the device */
-//      if(f_mkfs((TCHAR const*)SDPath, FM_ANY, 0, buffer, sizeof(buffer)) != FR_OK)
-//      {
-//        /* FatFs Format Error */
-//        Error_Handler();
-//      }
-//      else
-//      {       
-//        /*##-4- Create and Open a new text file object with write access #####*/
-//        if(f_open(&MyFile, "STM32F407_01.TXT", FA_CREATE_ALWAYS | FA_WRITE) != FR_OK)
-//        {
-//          /* 'STM32.TXT' file Open for write Error */
-//          Error_Handler();
-//        }
-//        else
-//        {
-//          /*##-5- Write data to the text file ################################*/
-//          res = f_write(&MyFile, wtext, sizeof(wtext), (void *)&byteswritten);
-//          
-//          if((byteswritten == 0) || (res != FR_OK))
-//          {
-//            /* 'STM32.TXT' file Write or EOF Error */
-//            Error_Handler();
-//          }
-//          else
-//          {
-//            /*##-6- Close the open text file #################################*/
-//            f_close(&MyFile);
-//            
-//            /*##-7- Open the text file object with read access ###############*/
-//            if(f_open(&MyFile, "STM32.TXT", FA_READ) != FR_OK)
-//            {
-//              /* 'STM32.TXT' file Open for read Error */
-//              Error_Handler();
-//            }
-//            else
-//            {
-//              /*##-8- Read data from the text file ###########################*/
-//              res = f_read(&MyFile, rtext, sizeof(rtext), (UINT*)&bytesread);
-//              
-//              if((bytesread == 0) || (res != FR_OK))
-//              {
-//                /* 'STM32.TXT' file Read or EOF Error */
-//                Error_Handler();
-//              }
-//              else
-//              {
-//                /*##-9- Close the open text file #############################*/
-//                f_close(&MyFile);
-//                
-//                /*##-10- Compare read data with the expected data ############*/
-//                if((bytesread != byteswritten))
-//                {                
-//                  /* Read data is different from the expected data */
-//                  Error_Handler();
-//                }
-//                else
-//                {
-//                  /* Success of the demo: no error occurrence */
-//                  //BSP_LED_On(LED1);
-//                }
-//              }
-//            }
-//          }
-//        }
-//      }
-//    }
-//  }
-//  
-//  /*##-11- Unlink the RAM disk I/O driver ####################################*/
-//  FATFS_UnLinkDriver(SDPath);
+	/*##-1- Link the micro SD disk I/O driver ##################################*/
+  if(FATFS_LinkDriver(&SD_Driver, SDPath) == 0)
+  {
+    /*##-2- Register the file system object to the FatFs module ##############*/
+    if(f_mount(&SDFatFs, (TCHAR const*)SDPath, 0) != FR_OK)
+    {
+      /* FatFs Initialization Error */
+      Error_Handler();
+    }
+    else
+    {
+      /*##-3- Create a FAT file system (format) on the logical drive #########*/
+      /* WARNING: Formatting the uSD card will delete all content on the device */
+      if(f_mkfs((TCHAR const*)SDPath, FM_ANY, 0, buffer, sizeof(buffer)) != FR_OK)
+      {
+        /* FatFs Format Error */
+        Error_Handler();
+      }
+      else
+      {       
+        /*##-4- Create and Open a new text file object with write access #####*/
+        if(f_open(&MyFile, "STM32.TXT", FA_CREATE_ALWAYS | FA_READ|FA_WRITE) != FR_OK)
+        {
+          /* 'STM32.TXT' file Open for write Error */
+          Error_Handler();
+        }
+        else
+        {
+          /*##-5- Write data to the text file ################################*/
+          res = f_write(&MyFile, wtext, sizeof(wtext), (void *)&byteswritten);
+          
+          if((byteswritten == 0) || (res != FR_OK))
+          {
+            /* 'STM32.TXT' file Write or EOF Error */
+            Error_Handler();
+          }
+          else
+          {
+            /*##-6- Close the open text file #################################*/
+            f_close(&MyFile);
+            
+            /*##-7- Open the text file object with read access ###############*/
+            if(f_open(&MyFile, "STM32.TXT", FA_READ) != FR_OK)
+            {
+              /* 'STM32.TXT' file Open for read Error */
+              Error_Handler();
+            }
+            else
+            {
+              /*##-8- Read data from the text file ###########################*/
+              res = f_read(&MyFile, rtext, sizeof(rtext), (UINT*)&bytesread);
+              
+              if((bytesread == 0) || (res != FR_OK))
+              {
+                /* 'STM32.TXT' file Read or EOF Error */
+                Error_Handler();
+              }
+              else
+              {
+                /*##-9- Close the open text file #############################*/
+                f_close(&MyFile);
+                
+                /*##-10- Compare read data with the expected data ############*/
+                if((bytesread != byteswritten))
+                {                
+                  /* Read data is different from the expected data */
+                  Error_Handler();
+                }
+                else
+                {
+                  /* Success of the demo: no error occurrence */
+                  //BSP_LED_On(LED1);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  /*##-11- Unlink the RAM disk I/O driver ####################################*/
+  FATFS_UnLinkDriver(SDPath);
 for (uwIndex = 0; uwIndex <1024; uwIndex++)
   {
     aTable[uwIndex] =uwIndex;

@@ -2515,7 +2515,13 @@ static uint32_t SD_InitCard(SD_HandleTypeDef *hsd)
   {
     return errorstate;
   }
-
+	//liu
+	hsd->Init.ClockEdge           = SDIO_CLOCK_EDGE_RISING;
+  hsd->Init.ClockBypass         = SDIO_CLOCK_BYPASS_DISABLE;
+  hsd->Init.ClockPowerSave      = SDIO_CLOCK_POWER_SAVE_DISABLE;
+  hsd->Init.BusWide             = SDIO_BUS_WIDE_1B;
+  hsd->Init.HardwareFlowControl = SDIO_HARDWARE_FLOW_CONTROL_DISABLE;
+  hsd->Init.ClockDiv            = SDIO_TRANSFER_CLK_DIV;
   /* Configure SDIO peripheral interface */     
   SDIO_Init(hsd->Instance, hsd->Init);
 
@@ -2615,7 +2621,7 @@ static uint32_t SD_PowerON(SD_HandleTypeDef *hsd)
     
     if((response & SDMMC_HIGH_CAPACITY) == SDMMC_HIGH_CAPACITY) /* (response &= SD_HIGH_CAPACITY) */
     {
-      hsd->SdCard.CardType = CARD_SDHC_SDXC;
+      hsd->SdCard.CardType = CARD_SDHC_SDXC;	//liu		0x02;
     }
     else
     {
