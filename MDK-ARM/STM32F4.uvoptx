@@ -236,6 +236,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>SystemCoreClock</ItemText>
         </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>EnumSize</ItemText>
+        </Ww>
       </WatchWindow1>
       <MemoryWindow1>
         <Mm>

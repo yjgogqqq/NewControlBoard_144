@@ -89,7 +89,13 @@ FIL MyFile;     /* File object */
 extern char SDPath[4]; /* SD card logical drive path */
 static uint8_t buffer[_MAX_SS]; /* a work buffer for the f_mkfs() */
 /* USER CODE END PV */
-
+enum
+{
+	test1 =01,
+	test2=02,
+	test3=300,
+}eTestSize;
+	int EnumSize=0;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 
@@ -110,6 +116,8 @@ int main(void)
   uint32_t byteswritten, bytesread;                     /* File write/read counts */
   uint8_t wtext[] = "This is STM32  ≤‚ ‘÷–Œƒ"; /* File write buffer */
   uint8_t rtext[100];                                   /* File read buffer */
+
+	EnumSize=sizeof(eTestSize);
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
