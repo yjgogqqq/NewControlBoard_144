@@ -55,8 +55,8 @@
 /* USER CODE BEGIN Includes */
 
 /* FatFs includes component */
-//#include "ff_gen_drv.h"
-//#include "sd_diskio.h"
+#include "ff_gen_drv.h"
+#include "sd_diskio.h"
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
