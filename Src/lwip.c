@@ -173,6 +173,10 @@ void MX_LWIP_Process(void)
   sys_check_timeouts();
 
 /* USER CODE BEGIN 4_3 */
+	#ifdef USE_DHCP
+    /* handle periodic timers for LwIP */
+    DHCP_Periodic_Handle(&gnetif);
+#endif 	
 /* USER CODE END 4_3 */
 }
 /* Private functions ---------------------------------------------------------*/

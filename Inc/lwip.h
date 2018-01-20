@@ -71,7 +71,7 @@
 
 /* USER CODE BEGIN 0 */
 //#define USE_LCD        /* enable LCD  */  
-#define USE_DHCP       /* enable DHCP, if disabled static address is used */
+//#define USE_DHCP       /* enable DHCP, if disabled static address is used */
 
 //#define DEST_IP_ADDR0   (uint8_t) 192
 //#define DEST_IP_ADDR1   (uint8_t) 168
@@ -85,7 +85,7 @@
 #define IP_ADDR0   (uint8_t) 169//192
 #define IP_ADDR1   (uint8_t) 254//168
 #define IP_ADDR2   (uint8_t) 136//0
-#define IP_ADDR3   (uint8_t) 10
+#define IP_ADDR3   (uint8_t) 125
    
 /*NETMASK*/
 #define NETMASK_ADDR0   (uint8_t) 255//255

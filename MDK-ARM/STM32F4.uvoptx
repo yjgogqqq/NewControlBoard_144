@@ -206,9 +206,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>224</LineNumber>
+          <LineNumber>252</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134236046</Address>
+          <Address>134219654</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -217,7 +217,39 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>../Src/stm32f4xx_it.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\STM32F4\../Src/stm32f4xx_it.c\224</Expression>
+          <Expression>\\STM32F4\../Src/stm32f4xx_it.c\252</Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>238</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134218754</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>../Src/stm32f4xx_it.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\STM32F4\../Src/stm32f4xx_it.c\238</Expression>
+        </Bp>
+        <Bp>
+          <Number>2</Number>
+          <Type>0</Type>
+          <LineNumber>286</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134257462</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\Src\udp_echoserver.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\STM32F4\../Src/udp_echoserver.c\286</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -1156,7 +1188,7 @@
 
   <Group>
     <GroupName>Middlewares/FatFs</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -1484,7 +1516,7 @@
       <GroupNumber>3</GroupNumber>
       <FileNumber>98</FileNumber>
       <FileType>1</FileType>
-      <tvExp>0</tvExp>
+      <tvExp>1</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c</PathWithFileName>
