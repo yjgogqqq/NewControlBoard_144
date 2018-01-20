@@ -979,8 +979,8 @@ void HAL_ETH_IRQHandler(ETH_HandleTypeDef *heth)
   }
   
   /* Clear the interrupt flags */
-  //__HAL_ETH_DMA_CLEAR_IT(heth, ETH_DMA_IT_NIS);
-  
+  __HAL_ETH_DMA_CLEAR_IT(heth, ETH_DMA_IT_NIS);
+	
   /* ETH DMA Error */
   if(__HAL_ETH_DMA_GET_FLAG(heth, ETH_DMA_FLAG_AIS))
   {

@@ -30,6 +30,16 @@
 #ifndef __ECHO_H__
 #define __ECHO_H__
 
+/* Private macro -------------------------------------------------------------*/
+#define MAX_NETRECV				100
+#define MAX_PACKET_NUM		10
+/* Private variables ---------------------------------------------------------*/
+typedef struct
+{
+	char payload[MAX_NETRECV];
+	char len;
+	void *pre;
+}UDP_PrunePacketTypeDef;
 
 void udp_echoserver_init(void);
 
