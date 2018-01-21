@@ -29,7 +29,7 @@
  */
 #ifndef __ECHO_H__
 #define __ECHO_H__
-
+#include "err.h"
 /* Private macro -------------------------------------------------------------*/
 #define MAX_NETRECV				100
 #define MAX_PACKET_NUM		10
@@ -41,6 +41,6 @@ typedef struct
 	void *pre;
 }UDP_PrunePacketTypeDef;
 
-void udp_echoserver_init(void);
-
+void udp_echoserver_init(u16_t port);
+err_t udp_SendData(void *data,int size);
 #endif /* __MINIMAL_ECHO_H */

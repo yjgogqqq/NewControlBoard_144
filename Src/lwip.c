@@ -69,6 +69,33 @@ void _Error_Handler(char * file, int line);
 uint32_t DHCPcoarseTimer = 0;
 /* USER CODE BEGIN 1 */
 /* Private variables ---------------------------------------------------------*/
+//unsigned char RemoteIpAddr0=192;
+//unsigned char RemoteIpAddr1=168;
+//unsigned char RemoteIpAddr2=0;
+//unsigned char RemoteIpAddr3=131;
+
+unsigned int UdpServerPort=5000;   /* define the UDP local connection port */
+//unsigned int UdpClientPort=10000;   /* define the UDP remote connection port */
+ 
+/*Static IP ADDRESS: LocalIpAddr0.LocalIpAddr1.LocalIpAddr2.LocalIpAddr3 */
+unsigned char LocalIpAddr0=192;
+unsigned char LocalIpAddr1=168;
+unsigned char LocalIpAddr2=0;
+unsigned char LocalIpAddr3=125;
+   
+/*NETMASK*/
+unsigned char NetmaskAddr0=255;
+unsigned char NetmaskAddr1=0;
+unsigned char NetmaskAddr2=0;
+unsigned char NetmaskAddr3=0;
+
+/*Gateway Address*/
+unsigned char GwAddr0=0;
+unsigned char GwAddr1=0;
+unsigned char GwAddr2=0;
+unsigned char GwAddr3=0;
+
+
 #ifdef USE_DHCP
 #define MAX_DHCP_TRIES  4
 static uint32_t DHCPfineTimer = 0;
@@ -97,9 +124,9 @@ void Netif_Config(void)
   ip_addr_set_zero_ip4(&netmask);
   ip_addr_set_zero_ip4(&gw);
 #else
-  IP_ADDR4(&ipaddr,IP_ADDR0,IP_ADDR1,IP_ADDR2,IP_ADDR3);
-  IP_ADDR4(&netmask,NETMASK_ADDR0,NETMASK_ADDR1,NETMASK_ADDR2,NETMASK_ADDR3);
-  IP_ADDR4(&gw,GW_ADDR0,GW_ADDR1,GW_ADDR2,GW_ADDR3);
+  IP_ADDR4(&ipaddr,LocalIpAddr0,LocalIpAddr1,LocalIpAddr2,LocalIpAddr3);
+  IP_ADDR4(&netmask,NetmaskAddr0,NetmaskAddr1,NetmaskAddr2,NetmaskAddr3);
+  IP_ADDR4(&gw,GwAddr0,GwAddr1,GwAddr2,GwAddr3);
 #endif /* USE_DHCP */
   
   /* Add the network interface */    
@@ -137,9 +164,9 @@ void MX_LWIP_Init(void)
 
 /* USER CODE BEGIN 3 */
   /* tcp echo server Init */
-  udp_echoserver_init();
+  udp_echoserver_init(UdpServerPort);
 	 /* Notify user about the network interface config */
-  User_notification(&gnetif);
+  //User_notification(&gnetif);
 /* USER CODE END 3 */
 }
 
@@ -244,9 +271,9 @@ void ethernetif_notify_conn_changed(struct netif *netif)
     /* Update DHCP state machine */
     DHCP_state = DHCP_START;
 #else
-    IP_ADDR4(&ipaddr, IP_ADDR0, IP_ADDR1, IP_ADDR2, IP_ADDR3);
-    IP_ADDR4(&netmask, NETMASK_ADDR0, NETMASK_ADDR1 , NETMASK_ADDR2, NETMASK_ADDR3);
-    IP_ADDR4(&gw, GW_ADDR0, GW_ADDR1, GW_ADDR2, GW_ADDR3);  
+  IP_ADDR4(&ipaddr,LocalIpAddr0,LocalIpAddr1,LocalIpAddr2,LocalIpAddr3);
+  IP_ADDR4(&netmask,NetmaskAddr0,NetmaskAddr1,NetmaskAddr2,NetmaskAddr3);
+  IP_ADDR4(&gw,GwAddr0,GwAddr1,GwAddr2,GwAddr3); 
     
     netif_set_addr(netif, &ipaddr , &netmask, &gw);  
     

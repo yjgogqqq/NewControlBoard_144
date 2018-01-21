@@ -408,6 +408,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART1_UART_Init();
+	MX_FATFS_Init();
   MX_LWIP_Init();
 //  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
@@ -420,6 +421,7 @@ int main(void)
   {
 		/* USER CODE END WHILE */
 		MX_LWIP_Process();
+		udp_SendData("2",sizeof(char));
   /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

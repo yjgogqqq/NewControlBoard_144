@@ -48,9 +48,10 @@
 
 #include "fatfs.h"
 
+#define MAX_CONFIG_FILE_NUMBER 8
 uint8_t retSD;    /* Return value for SD */
 char SDPath[4];   /* SD logical drive path */
-FATFS SDFatFS;    /* File system object for SD logical drive */
+FATFS SDFatFs;    /* File system object for SD logical drive */
 FIL SDFile;       /* File object for SD */
 
 /* USER CODE BEGIN Variables */
@@ -61,12 +62,51 @@ void MX_FATFS_Init(void)
 {
   /*## FatFS: Link the SD driver ###########################*/
   retSD = FATFS_LinkDriver(&SD_Driver, SDPath);
-
+	
   /* USER CODE BEGIN Init */
-  /* additional user code for init */     
+  /* additional user code for init */
+	if(0==retSD)
+	{
+		if(f_mount(&SDFatFs, (TCHAR const*)SDPath, 0) != FR_OK)
+    {
+      /* FatFs Initialization Error */
+			#ifdef USE_INIT_PRINTF
+			printf("Error when SD mount!\r\nError in file:%s;Line:%d",__FILE__,__LINE__);
+			#endif 
+    }
+	}
   /* USER CODE END Init */
 }
 
+void ReadSysConfigFromSD()
+{
+	char fileTotalName[128];
+	FRESULT res;
+	uint32_t byteswritten, bytesread;
+	for(int curFileID=0;curFileID<MAX_CONFIG_FILE_NUMBER;curFileID++)
+	{
+		sscanf(fileTotalName,"%2d.TXT",&curFileID);
+		if(f_open(&SDFile, fileTotalName, FA_READ) == FR_OK)
+		{
+			res = f_read(&SDFile, rtext, sizeof(rtext), (UINT*)&bytesread);
+              
+			if((bytesread == 0) || (res != FR_OK))
+			{
+				/* 'STM32.TXT' file Read or EOF Error */
+				//Error_Handler();
+			}
+		}
+		else
+		{
+			/* 'STM32.TXT' file Open for write Error */
+			#ifdef USE_INIT_PRINTF
+			printf("Erroe when open file:%s!\r\nError in file:%s;Line:%d\r\n",fileTotalName,__FILE__,__LINE__);
+			#endif 
+		}
+	}
+	
+	
+}
 /**
   * @brief  Gets Time from RTC 
   * @param  None

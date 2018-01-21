@@ -51,12 +51,15 @@
 #include <string.h>
 #include <stdio.h>
 #include "udp_echoserver.h"
+/* Private constants ---------------------------------------------------------*/
+
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-
+struct udp_pcb *spCurUpcb=NULL;
 UDP_PrunePacketTypeDef *listUdpPrunePacket=NULL;
-ip_addr_t RemoteIP;
-u16_t RemotePort;
+ip_addr_t RemoteIP={(131<<24)|(0<<16)|(168<<8)|(192<<0)};
+u16_t RemotePort=10000;
+
 
 /* Private function prototypes -----------------------------------------------*/
 void udp_echoserver_receive_callback(void *arg, struct udp_pcb *upcb, struct pbuf *p, const ip_addr_t *addr, u16_t port);
@@ -69,19 +72,19 @@ void ListBuffProcess(UDP_PrunePacketTypeDef *t_PrunePacket);
   * @param  None
   * @retval None
   */
-void udp_echoserver_init(void)
+void udp_echoserver_init(u16_t port)
 {
    struct udp_pcb *upcb;
    err_t err;
    
    /* Create a new UDP control block  */
-   upcb = udp_new();
+   spCurUpcb=upcb = udp_new();
    
    if (upcb)
    {
      /* Bind the upcb to the UDP_PORT port */
      /* Using IP_ADDR_ANY allow the upcb to be used by any local interface */
-      err = udp_bind(upcb, IP_ADDR_ANY, UDP_SERVER_PORT);
+      err = udp_bind(upcb, IP_ADDR_ANY, port);
       
       if(err == ERR_OK)
       {
@@ -103,8 +106,7 @@ void udp_echoserver_init(void)
 void udp_echoserver_receive_callback(void *arg, struct udp_pcb *upcb, struct pbuf *p, const ip_addr_t *addr, u16_t port)
 {
   /* Connect to the remote client */
-  //udp_connect(upcb, addr, UDP_CLIENT_PORT);
-	RemoteIP=*addr;
+	RemoteIP.addr=addr->addr;
 	RemotePort=port;
 	udp_PrunePacket(p);
   /* Tell the client that we have accepted it */
@@ -144,6 +146,16 @@ void udp_PrunePacket(struct pbuf *p)
 		}
 	}
 }
+
+/**
+  * @brief This function is called when an UDP datagrm has been received on the port UDP_PORT.
+  * @param arg user supplied argument (udp_pcb.recv_arg)
+  * @param pcb the udp_pcb which received data
+  * @param p the packet buffer that was received
+  * @param addr the remote IP address from which the packet was received
+  * @param port the remote port from which the packet was received
+  * @retval None
+  */
 void ListBuffProcess(UDP_PrunePacketTypeDef *prunePacket)
 {
 	UDP_PrunePacketTypeDef *p=NULL;
@@ -152,6 +164,7 @@ void ListBuffProcess(UDP_PrunePacketTypeDef *prunePacket)
 	{
 		if(i<MAX_PACKET_NUM)
 		{
+			i++;
 			continue;
 		}
 		else
@@ -159,9 +172,18 @@ void ListBuffProcess(UDP_PrunePacketTypeDef *prunePacket)
 			free(p);
 			break;
 		}
-		i++;
 	}
 }
+
+/**
+  * @brief This function is called when an UDP datagrm has been received on the port UDP_PORT.
+  * @param arg user supplied argument (udp_pcb.recv_arg)
+  * @param pcb the udp_pcb which received data
+  * @param p the packet buffer that was received
+  * @param addr the remote IP address from which the packet was received
+  * @param port the remote port from which the packet was received
+  * @retval None
+  */
 int udp_GetData(void *retData,int size,unsigned char index)
 {
 	UDP_PrunePacketTypeDef *p=NULL;
@@ -184,9 +206,25 @@ int udp_GetData(void *retData,int size,unsigned char index)
 		return -1;
 	}
 }
-int udp_SendData(void *data,int size)
+
+/**
+  * @brief This function is called when an UDP datagrm has been received on the port UDP_PORT.
+  * @param arg user supplied argument (udp_pcb.recv_arg)
+  * @param pcb the udp_pcb which received data
+  * @param p the packet buffer that was received
+  * @param addr the remote IP address from which the packet was received
+  * @param port the remote port from which the packet was received
+  * @retval None
+  */
+err_t udp_SendData(void *data,int size)
 {
-	
+	struct pbuf *p;
+	int ret;
+	p=pbuf_alloc(PBUF_TRANSPORT,size,PBUF_RAM);
+	p->payload=data;
+	ret=udp_sendto(spCurUpcb,p,&RemoteIP,RemotePort);
+	pbuf_free(p);
+	return ret;
 }
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
 

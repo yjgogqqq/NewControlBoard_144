@@ -1,4 +1,4 @@
---cpu=Cortex-M4.fp
+--cpu Cortex-M4.fp
 "stm32f4\etharp.o"
 "stm32f4\autoip.o"
 "stm32f4\eap.o"
@@ -116,6 +116,6 @@
 "stm32f4\startup_stm32f407xx.o"
 "stm32f4\system_stm32f4xx.o"
 --library_type=microlib --strict --scatter "STM32F4\STM32F4.sct"
---diag_suppress=L6329 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--diag_suppress=L6329 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list "STM32F4.map" -o STM32F4\STM32F4.axf
